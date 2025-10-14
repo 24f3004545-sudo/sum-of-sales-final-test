@@ -1,86 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Summary 12345</title>
-    <!-- Bootstrap 5 CSS from jsdelivr -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-        .summary-card {
-            max-width: 500px;
-            margin: 5rem auto;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="card summary-card text-center">
-            <div class="card-body">
-                <h1 class="card-title mb-4">Sales Summary</h1>
-                <p class="lead">The calculated total sales from the dataset is:</p>
-                <p class="display-4 fw-bold" id="total-sales">$0.00</p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // CSV data from the attached file
-            const csvData = `product,region,sales
-Widget A,North,150.50
-Widget B,South,220.00
-Widget A,North,75.25`;
-
-            // Function to parse CSV and sum the 'sales' column
-            function calculateTotalSales(data) {
-                const lines = data.trim().split('\n');
-                if (lines.length <= 1) {
-                    return 0; // No data rows
-                }
-
-                const header = lines.shift().split(',');
-                const salesIndex = header.indexOf('sales');
-
-                if (salesIndex === -1) {
-                    console.error('"sales" column not found in CSV data.');
-                    return 0;
-                }
-
-                const total = lines.reduce((sum, line) => {
-                    const values = line.split(',');
-                    if (values.length > salesIndex) {
-                        const salesValue = parseFloat(values[salesIndex]);
-                        if (!isNaN(salesValue)) {
-                            return sum + salesValue;
-                        }
-                    }
-                    return sum;
-                }, 0);
-
-                return total;
-            }
-
-            // Calculate the total
-            const totalSales = calculateTotalSales(csvData);
-
-            // Display the total in the designated element
-            const totalSalesElement = document.getElementById('total-sales');
-            if (totalSalesElement) {
-                // Formatting as currency
-                totalSalesElement.textContent = `$${totalSales.toFixed(2)}`;
-            }
-        });
-    </script>
-
-</body>
-</html>
+<h1>Error</h1><p>Could not generate the application code. Gemini API error: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits.
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 2
+Please retry in 42.759438181s. [violations {
+  quota_metric: "generativelanguage.googleapis.com/generate_content_free_tier_requests"
+  quota_id: "GenerateRequestsPerMinutePerProjectPerModel-FreeTier"
+  quota_dimensions {
+    key: "model"
+    value: "gemini-2.5-pro"
+  }
+  quota_dimensions {
+    key: "location"
+    value: "global"
+  }
+  quota_value: 2
+}
+, links {
+  description: "Learn more about Gemini API quotas"
+  url: "https://ai.google.dev/gemini-api/docs/rate-limits"
+}
+, retry_delay {
+  seconds: 42
+}
+]</p>
