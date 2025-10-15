@@ -4,54 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Summary 12345</title>
+    <!-- Bootstrap 5 CSS from jsdelivr -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-color: #f0f2f5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            margin: 0;
+            background-color: #f8f9fa;
         }
         .summary-card {
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        .summary-card h1 {
-            color: #333;
-            margin-bottom: 0.5rem;
-        }
-        .summary-card p {
-            color: #666;
-            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin: 5rem auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         #total-sales {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #28a745;
-            letter-spacing: -1px;
-        }
-        .spinner-border {
-             width: 3.5rem;
-             height: 3.5rem;
+            color: #0d6efd;
         }
     </style>
 </head>
 <body>
 
-    <div class="summary-card">
-        <h1>Sales Summary</h1>
-        <p class="lead">Total value of all product sales</p>
-        <div id="total-sales">
-             <div class="spinner-border text-success" role="status">
-                <span class="visually-hidden">Loading...</span>
+    <div class="container">
+        <div class="card summary-card text-center">
+            <div class="card-header">
+                <h1 class="h3 mb-0">Sales Summary</h1>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title text-muted">Total Sales Revenue</h5>
+                <p class="card-text display-4 fw-bold" id="total-sales">
+                    Loading...
+                </p>
+            </div>
+            <div class="card-footer text-muted">
+                Live Data Calculation
             </div>
         </div>
     </div>
@@ -65,20 +48,22 @@ Widget B,South,220.00
 Widget A,North,75.25`;
 
             /**
-             * Parses CSV data and calculates the sum of a specific column.
-             * @param {string} csv - The CSV data as a string.
-             * @param {string} columnName - The name of the column to sum.
-             * @returns {number} The total sum of the column.
+             * Parses a CSV string and calculates the sum of a specific column.
+             * @param {string} csvString The raw CSV data.
+             * @param {string} columnName The name of the column to sum.
+             * @returns {number} The sum of the values in the specified column.
              */
-            function calculateTotal(csv, columnName) {
-                const lines = csv.trim().split('\n');
-                if (lines.length < 2) return 0; // No data rows
+            function sumCsvColumn(csvString, columnName) {
+                const lines = csvString.trim().split('\n');
+                if (lines.length < 2) {
+                    return 0; // No data rows
+                }
 
-                const headers = lines[0].split(',').map(header => header.trim());
+                const headers = lines[0].split(',').map(h => h.trim());
                 const columnIndex = headers.indexOf(columnName);
 
                 if (columnIndex === -1) {
-                    console.error(`Column "${columnName}" not found in CSV header.`);
+                    console.error(`Column '${columnName}' not found in CSV headers.`);
                     return 0;
                 }
 
@@ -95,31 +80,21 @@ Widget A,North,75.25`;
                 return total;
             }
 
-            try {
-                const totalSales = calculateTotal(csvData, 'sales');
+            // Calculate the total sales
+            const totalSales = sumCsvColumn(csvData, 'sales');
 
-                // Format the total as a currency string (e.g., $445.75)
-                const formattedTotal = new Intl.NumberFormat('en-US', {
+            // Find the target element to display the result
+            const totalSalesElement = document.getElementById('total-sales');
+
+            if (totalSalesElement) {
+                // Format the number as a currency string (e.g., $445.75)
+                const formattedTotal = totalSales.toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD'
-                }).format(totalSales);
-
-                const totalSalesElement = document.getElementById('total-sales');
-                if (totalSalesElement) {
-                    // A small delay to show the spinner for effect, then update the content.
-                    setTimeout(() => {
-                        totalSalesElement.textContent = formattedTotal;
-                    }, 500);
-                } else {
-                    console.error('Element with id #total-sales not found.');
-                }
-            } catch (error) {
-                console.error('An error occurred during sales calculation:', error);
-                const totalSalesElement = document.getElementById('total-sales');
-                if (totalSalesElement) {
-                    totalSalesElement.textContent = 'Error';
-                    totalSalesElement.style.color = '#dc3545'; // Bootstrap danger color
-                }
+                });
+                totalSalesElement.textContent = formattedTotal;
+            } else {
+                console.error("Element with id '#total-sales' was not found in the DOM.");
             }
         });
     </script>
